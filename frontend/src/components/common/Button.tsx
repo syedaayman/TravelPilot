@@ -9,18 +9,18 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50';
+    const baseStyles = 'inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:pointer-events-none disabled:opacity-50 shadow-sm';
     const variants = {
-      primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-      outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-      ghost: 'hover:bg-accent hover:text-accent-foreground',
-      destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+      primary: 'bg-blue-600 text-white hover:bg-blue-700',
+      secondary: 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50',
+      outline: 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900',
+      ghost: 'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900 shadow-none',
+      destructive: 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100',
     };
     const sizes = {
-      sm: 'h-9 px-3',
-      md: 'h-10 px-4 py-2',
-      lg: 'h-11 px-8',
+      sm: 'h-8 px-3 text-xs',
+      md: 'h-10 px-4 py-2 text-sm',
+      lg: 'h-11 px-6 text-base',
     };
 
     return (

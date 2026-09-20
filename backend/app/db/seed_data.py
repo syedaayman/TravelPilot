@@ -1173,3 +1173,310 @@ TRANSPORT_OPTIONS_DATA: List[Dict[str, Any]] = [
         "source": "curated_static",
     },
 ]
+
+DESTINATION_CULTURE_DATA = {
+    "Hyderabad": {
+        "history": "Founded in 1591 by Muhammad Quli Qutb Shah, Hyderabad was ruled by the Qutb Shahi dynasty and later the Nizams, growing into a grand royal capital renowned worldwide for wealth, architecture, pearls, and royal cuisine.",
+        "heritage_summary": "Intricate Indo-Islamic architecture, granite fortresses, colossal arches, and opulent royal palaces with Belgian chandeliers.",
+        "must_try_food": [
+            {
+                "name": "Hyderabadi Dum Biryani",
+                "type": "Signature Royal Dish",
+                "price_range": "₹300 - ₹600",
+                "description": "Fragrant basmati rice slow-cooked on dum with marinated meat, saffron, and aromatic spices.",
+                "suggested_meal": "Lunch",
+                "location": "Bawarchi (RT X Roads) / Paradise / Shadab"
+            },
+            {
+                "name": "Irani Chai & Osmania Biscuits",
+                "type": "Café Culture",
+                "price_range": "₹40 - ₹100",
+                "description": "Creamy, slow-brewed tea paired with sweet-salty butter biscuits, a daily Hyderabadi ritual.",
+                "suggested_meal": "Breakfast / Afternoon Snack",
+                "location": "Nimrah Café & Bakery near Charminar"
+            },
+            {
+                "name": "Haleem",
+                "type": "Heritage Slow-Cooked Stew",
+                "price_range": "₹250 - ₹450",
+                "description": "Savory wheat and meat stew pounded to a silk texture, garnished with fried onions, cashew, and lime.",
+                "suggested_meal": "Dinner",
+                "location": "Pista House / Hotel Shadab"
+            },
+            {
+                "name": "Double Ka Meetha & Qubani Ka Meetha",
+                "type": "Traditional Sweets",
+                "price_range": "₹120 - ₹250",
+                "description": "Rich bread pudding infused with cardamom and saffron, alongside stewed apricot dessert topped with malai.",
+                "suggested_meal": "Dessert",
+                "location": "Shah Ghouse / Jewel of Nizam"
+            }
+        ],
+        "textiles": [
+            {
+                "name": "Pochampally Ikat Handloom",
+                "description": "GI-tagged geometric resist-dyed silk and cotton handwoven sarees and fabrics from nearby Pochampally.",
+                "significance": "UNESCO tentative list handloom heritage"
+            },
+            {
+                "name": "Telia Rumal",
+                "description": "Traditional double-ikat oil-treated handloom square cloth featuring bold red, white, and black geometric motifs."
+            },
+            {
+                "name": "Hyderabadi Zardozi & Khada Dupatta",
+                "description": "Intricate gold and silver metallic embroidery on heavy silks, traditionally worn by Nizam brides."
+            }
+        ],
+        "crafts": [
+            {
+                "name": "Bidriware Metal Craft",
+                "description": "Blackened zinc-copper alloy inlaid with fine pure silver wire forming intricate floral arabesques."
+            },
+            {
+                "name": "Lac Bangles & Pearl Stringing",
+                "description": "Handcrafted resin bangles embedded with sparkling stones and freshwater pearls strung in Laad Bazaar."
+            }
+        ],
+        "culture_arts": [
+            {
+                "category": "Dance",
+                "name": "Kuchipudi",
+                "description": "Classical Telugu dance drama characterized by fast footwork, brass plate balancing, and expressive storytelling."
+            },
+            {
+                "category": "Music",
+                "name": "Deccani Qawwali & Ghazals",
+                "description": "Soulful Sufi devotional singing and classical Ghazals performed at royal courts and dargahs."
+            }
+        ],
+        "markets": [
+            {
+                "name": "Laad Bazaar (Choodi Bazaar)",
+                "type": "Heritage Market",
+                "description": "Historic narrow alleyways adjacent to Charminar famous for lac bangles, pearls, textiles, and bridal wear."
+            },
+            {
+                "name": "Perfume Market (Ittar Bazaar)",
+                "type": "Specialty Market",
+                "description": "Traditional perfume shops crafting natural non-alcoholic botanical essential oils (Ittar)."
+            }
+        ],
+        "signature_experiences": [
+            {
+                "title": "Old City Food & Heritage Walk",
+                "category": "Food Walk",
+                "duration": "3 hours",
+                "description": "Guided walking tour through Charminar lanes sampling Irani chai, bun maska, samosas, and authentic Biryani."
+            },
+            {
+                "title": "Bidriware Masterclass & Artisan Visit",
+                "category": "Craft Experience",
+                "duration": "2 hours",
+                "description": "Watch master craftsmen etch pure silver threads into blackened alloy metal in historic workshops."
+            }
+        ]
+    },
+    "Hampi": {
+        "history": "Capital of the magnificent Vijayanagara Empire from 1336 to 1565, Hampi was one of the largest and wealthiest cities in the medieval world before its siege, leaving a breathtaking 4,100-hectare UNESCO sanctuary.",
+        "heritage_summary": "Surreal boulder landscapes interspersed with monumental stone temples, monolith statues, royal pavilions, and stepped tanks.",
+        "must_try_food": [
+            {
+                "name": "Karnataka Thali & Jolada Rotti",
+                "type": "Traditional Regional Meal",
+                "price_range": "₹150 - ₹300",
+                "description": "Sorghum flatbread served with spicy eggplant curry (Ennegai), lentil sambar, chutneys, and fresh curd.",
+                "suggested_meal": "Lunch",
+                "location": "Mango Tree Restaurant / Gopi Guest House"
+            },
+            {
+                "name": "Hampi Banana Flower Curry & Filter Coffee",
+                "type": "Local Countryside Special",
+                "price_range": "₹80 - ₹180",
+                "description": "Locally grown organic banana blossoms tempered with mustard and coconut, washed down with hot South Indian filter coffee.",
+                "suggested_meal": "Breakfast",
+                "location": "Laughing Buddha Café / Virupaksha Temple Stalls"
+            }
+        ],
+        "textiles": [
+            {
+                "name": "Lambani Tribal Embroidery & Handloom",
+                "description": "Vibrant mirror-work embroidery, cowrie shells, and heavy patchwork cotton robes crafted by the nomadic Lambani women.",
+                "significance": "GI-tagged Karnataka artisan craft"
+            }
+        ],
+        "crafts": [
+            {
+                "name": "Stone Carving & Granite Sculpting",
+                "description": "Traditional stone masons sculpting miniature granite stone chariots, pillars, and deity idols using ancient chiseling tools."
+            },
+            {
+                "name": "Banana Fiber Handicrafts",
+                "description": "Eco-friendly woven baskets, floor mats, and bags braided from banana plant fibers by local rural women collectives."
+            }
+        ],
+        "culture_arts": [
+            {
+                "category": "Dance",
+                "name": "Dollu Kunitha & Togalu Gombeyaata",
+                "description": "Energetic drum dance performed during temple processions and traditional leather shadow puppetry depicting epics."
+            }
+        ],
+        "markets": [
+            {
+                "name": "Hampi Bazaar (Virupaksha Street)",
+                "type": "Heritage Arcade",
+                "description": "1-kilometer paved medieval bazaar street selling leather goods, bronze statues, stone carvings, and Lambani textiles."
+            }
+        ],
+        "signature_experiences": [
+            {
+                "title": "Tungabhadra Coracle River Ride",
+                "category": "Local Experience",
+                "duration": "1.5 hours",
+                "description": "Float across the sacred Tungabhadra River in traditional round woven leather coracle boats to cave shrines."
+            },
+            {
+                "title": "Matanga Hill Sunset Trek",
+                "category": "Nature & Landscape",
+                "duration": "2 hours",
+                "description": "Hike up boulder steps for panoramic golden hour vistas over the sprawling Vijayanagara temple complex."
+            }
+        ]
+    },
+    "Goa": {
+        "history": "A unique cultural fusion shaped by 450 years of Portuguese rule alongside indigenous Konkani traditions, resulting in distinctive Baroque church architecture, Indo-Portuguese villas, and vibrant coastal culture.",
+        "heritage_summary": "UNESCO Portuguese churches of Old Goa, pastel-colored Latin quarters, coastal forts, and whitewashed chapels.",
+        "must_try_food": [
+            {
+                "name": "Goan Fish Curry Rice",
+                "type": "Signature Coastal Meal",
+                "price_range": "₹250 - ₹500",
+                "description": "Fresh kingfish or pomfret cooked in a tangy red coconut-kokum gravy served with steamy parboiled rice.",
+                "suggested_meal": "Lunch",
+                "location": "Vinayak Family Restaurant / Ritz Classic"
+            },
+            {
+                "name": "Pork Vindaloo & Poi Bread",
+                "type": "Indo-Portuguese Heritage",
+                "price_range": "₹350 - ₹600",
+                "description": "Tender meat braised in a fiery red chili-vinegar-garlic paste paired with traditional Goan poee wheat pockets.",
+                "suggested_meal": "Dinner",
+                "location": "Mum's Kitchen / Viva Panjim"
+            },
+            {
+                "name": "Bebinca & Fenni Cocktails",
+                "type": "Dessert & Spirit",
+                "price_range": "₹150 - ₹350",
+                "description": "7-layered Goan coconut milk dessert baked layer by layer, accompanied by artisanal cashew or coconut fenni.",
+                "suggested_meal": "Evening Experience",
+                "location": "Martin's Corner / Joseph Bar Fontainhas"
+            }
+        ],
+        "textiles": [
+            {
+                "name": "Kunbi Saree",
+                "description": "Ancient handwoven cotton check saree dyed in natural terracotta red and yellow, traditionally worn by Kunbi tribal women."
+            }
+        ],
+        "crafts": [
+            {
+                "name": "Azulejos Hand-Painted Ceramic Tiles",
+                "description": "Traditional Portuguese tin-glazed ceramic tiles hand-painted in vibrant blue, yellow, and green motifs."
+            },
+            {
+                "name": "Coir & Seashell Artistry",
+                "description": "Intricate decorative lamps, mirrors, and hangings crafted from sea shells, coconut shells, and woven coir."
+            }
+        ],
+        "culture_arts": [
+            {
+                "category": "Music",
+                "name": "Fado & Goan Mando",
+                "description": "Melancholic Portuguese guitar ballads (Fado) and lively Konkani courtship songs (Mando) accompanied by violin."
+            }
+        ],
+        "markets": [
+            {
+                "name": "Fontainhas Latin Quarter Shops",
+                "type": "Heritage District",
+                "description": "Quaint cobblestone streets lined with artisan studios selling painted tiles, Goan cashew nuts, and spices."
+            },
+            {
+                "name": "Anjuna Flea Market",
+                "type": "Beachfront Market",
+                "description": "Famous weekly bohemian market featuring handcrafted jewelry, hammocks, Goan handicrafts, and live music."
+            }
+        ],
+        "signature_experiences": [
+            {
+                "title": "Fontainhas Heritage & Architecture Walk",
+                "category": "Cultural Walk",
+                "duration": "2 hours",
+                "description": "Explore Panjim's colorful Portuguese quarter, historic chapels, traditional bakeries, and tile painting workshops."
+            },
+            {
+                "title": "Spice Plantation Tour & Organic Lunch",
+                "category": "Food & Nature",
+                "duration": "3 hours",
+                "description": "Guided walk through lush cardamom and pepper groves followed by an authentic Goan feast served on banana leaves."
+            }
+        ]
+    },
+    "Jaipur": {
+        "history": "Founded in 1727 by Maharaja Sawai Jai Singh II as India's first planned grid city, painted pink in 1876 to welcome the Prince of Wales, embodying grand Rajputana royal legacy.",
+        "heritage_summary": "Fortified hill forts, delicate honeycomb palaces, astronomical stone observatories, and sprawling royal gardens.",
+        "must_try_food": [
+            {
+                "name": "Dal Baati Churma",
+                "type": "Rajputana Royal Meal",
+                "price_range": "₹350 - ₹700",
+                "description": "Crispy baked wheat balls dipped in ghee, served with spicy mixed lentil dal and sweet crumbled wheat dessert.",
+                "suggested_meal": "Lunch",
+                "location": "Laxmi Misthan Bhandar (LMB) / Chokhi Dhani"
+            },
+            {
+                "name": "Laal Maas",
+                "type": "Royal Game Stew",
+                "price_range": "₹450 - ₹800",
+                "description": "Fiery mutton curry cooked with Mathania red chilies, garlic, and yogurt.",
+                "suggested_meal": "Dinner",
+                "location": "Handi Restaurant / 1135 AD Amber Fort"
+            }
+        ],
+        "textiles": [
+            {
+                "name": "Sanganeri & Bagru Block Print",
+                "description": "Hand-blocked natural vegetable dye textiles using carved teak wood blocks on fine cottons."
+            }
+        ],
+        "crafts": [
+            {
+                "name": "Jaipur Blue Pottery",
+                "description": "Turquoise and lapis blue quartz-powder glazed pottery hand-painted with Persian motifs."
+            }
+        ],
+        "culture_arts": [
+            {
+                "category": "Dance",
+                "name": "Ghoomar & Kalbelia",
+                "description": "Graceful twirling veil dance of royal women and the serpentine snake-charmer dance of the Kalbelia tribe."
+            }
+        ],
+        "markets": [
+            {
+                "name": "Johari Bazaar & Bapu Bazaar",
+                "type": "Royal Bazaar",
+                "description": "Pink-walled shopping corridors famous for gemstones, silver jewelry, Mojari leather shoes, and block print textiles."
+            }
+        ],
+        "signature_experiences": [
+            {
+                "title": "Block Printing Workshop in Sanganer",
+                "category": "Craft Workshop",
+                "duration": "2.5 hours",
+                "description": "Stamp your own custom cotton scarf using traditional teakwood blocks and natural plant dyes."
+            }
+        ]
+    }
+}
+

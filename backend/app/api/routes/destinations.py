@@ -154,3 +154,73 @@ def get_destination(destination_id: str):
             for t in transport
         ],
     )
+
+
+@router.get(
+    "/{destination_id}/culture",
+    summary="Get rich destination culture, food, textiles, and craft knowledge",
+    description="Returns curated historical context, signature food, regional textiles, artisan crafts, performing arts, markets, and experiences.",
+)
+def get_destination_culture(destination_id: str):
+    from backend.app.db.seed_data import DESTINATION_CULTURE_DATA
+    db = get_db()
+    dest = db.destinations.get(destination_id)
+    name = dest.name if dest else destination_id
+
+    for key, data in DESTINATION_CULTURE_DATA.items():
+        if key.lower() in name.lower() or name.lower() in key.lower():
+            return {"destination": key, "culture": data}
+
+    # Fallback generic culture structure for other destinations
+    return {
+        "destination": name,
+        "culture": {
+            "history": f"{name} is a vibrant destination steeped in local heritage and rich regional traditions.",
+            "heritage_summary": "Historic monuments, traditional architecture, and vibrant local neighborhoods.",
+            "must_try_food": [
+                {
+                    "name": f"Local {name} Thali",
+                    "type": "Regional Feast",
+                    "price_range": "₹200 - ₹400",
+                    "description": "Authentic regional thali featuring local curries, rice, and freshly baked breads.",
+                    "suggested_meal": "Lunch",
+                    "location": "Local Heritage Market",
+                }
+            ],
+            "textiles": [
+                {
+                    "name": "Regional Handloom",
+                    "description": "Traditional handwoven sarees and cotton fabrics crafted by local artisans.",
+                }
+            ],
+            "crafts": [
+                {
+                    "name": "Artisan Handicrafts",
+                    "description": "Handcrafted souvenirs, pottery, and traditional metalwork.",
+                }
+            ],
+            "culture_arts": [
+                {
+                    "category": "Dance",
+                    "name": "Regional Folk Performance",
+                    "description": "Traditional folk dance and music performance.",
+                }
+            ],
+            "markets": [
+                {
+                    "name": "Main Market Street",
+                    "type": "Local Bazaar",
+                    "description": "Bustling central bazaar selling local spices, handicrafts, and delicacies.",
+                }
+            ],
+            "signature_experiences": [
+                {
+                    "title": "Old Town Cultural Walk",
+                    "category": "Heritage Walk",
+                    "duration": "2 hours",
+                    "description": "Guided walking tour through historic streets and markets.",
+                }
+            ],
+        },
+    }
+

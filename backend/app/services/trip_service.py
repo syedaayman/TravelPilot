@@ -158,61 +158,103 @@ class TripService:
             )
             legs.append(leg)
 
-        # 5. Schedule Tourist Activities per Destination Stop
+        # 5. Schedule Tourist & Cultural Activities per Destination Stop
         items: List[ItineraryItem] = []
         overall_day = 1
         from backend.app.core.schedule_validator import date_to_schema_day
+        from backend.app.db.seed_data import DESTINATION_CULTURE_DATA
+
+        global_used_place_ids: set[str] = set()
 
         for stop in stops:
             dest = destinations_by_stop[stop.id]
-            # Fetch places in destination
             places = db.search_places(dest.id)
             if not places:
-                places = list(db.places.values())[:3]
+                places = list(db.places.values())[:5]
+
+            restaurants = db.search_restaurants(dest.id)
+            culture_info = DESTINATION_CULTURE_DATA.get(dest.name, {})
 
             curr_stop_date = stop.arrival_date
-            used_place_ids: set[str] = set()
+            food_items_list = culture_info.get("must_try_food", [])
+            experiences_list = culture_info.get("signature_experiences", [])
 
             while curr_stop_date <= stop.departure_date:
                 schema_day = date_to_schema_day(curr_stop_date)
 
-                # Filter places open on curr_stop_date
                 open_places = [p for p in places if schema_day not in p.closed_days]
                 if not open_places:
                     open_places = places
 
-                # Find available unused places for this stop among open places
-                available_places = [p for p in open_places if p.id not in used_place_ids]
+                available_places = [p for p in open_places if p.id not in global_used_place_ids]
                 if not available_places:
                     available_places = open_places
 
-                # Item 1: Morning (10:00 - 12:30)
+                # 08:30 - 09:30: Breakfast Experience
+                bf_info = food_items_list[0] if food_items_list else {"name": "Local Traditional Breakfast & Chai", "location": dest.name}
+                item_bf = ItineraryItem(
+                    id=str(uuid4()),
+                    trip_stop_id=stop.id,
+                    item_type=ItemType.CUSTOM,
+                    restaurant_id=None,
+                    custom_title=f"Breakfast: {bf_info.get('name', 'Local Breakfast')}",
+                    day_number=overall_day,
+                    scheduled_date=curr_stop_date,
+                    start_time="08:30",
+                    end_time="09:30",
+                    cost=150.0,
+                    notes="Food",
+                )
+                items.append(item_bf)
+
+                # 10:00 - 12:15: Morning Heritage / Site Visit
                 p1 = available_places[0]
-                used_place_ids.add(p1.id)
+                global_used_place_ids.add(p1.id)
                 item1 = ItineraryItem(
                     id=str(uuid4()),
                     trip_stop_id=stop.id,
+                    item_type=ItemType.PLACE,
                     place_id=p1.id,
                     custom_title=p1.name,
                     day_number=overall_day,
                     scheduled_date=curr_stop_date,
                     start_time="10:00",
-                    end_time="12:30",
+                    end_time="12:15",
                     cost=p1.entry_fee,
-                    travel_time_from_prev_minutes=0,
-                    travel_distance_km=0.0,
+                    notes=p1.category,
+                    travel_time_from_prev_minutes=15,
+                    travel_distance_km=2.5,
                 )
                 items.append(item1)
 
-                # Item 2: Afternoon (14:30 - 17:00)
-                remaining_afternoon = [p for p in open_places if p.id not in used_place_ids]
-                if not remaining_afternoon:
-                    remaining_afternoon = [p for p in open_places if p.id != p1.id] or open_places
+                # 13:00 - 14:15: Regional Lunch Experience
+                lunch_rest = restaurants[1] if len(restaurants) > 1 else (restaurants[0] if restaurants else None)
+                lunch_info = food_items_list[1] if len(food_items_list) > 1 else (food_items_list[0] if food_items_list else {"name": f"{dest.name} Specialty Meal"})
+                item_lunch = ItineraryItem(
+                    id=str(uuid4()),
+                    trip_stop_id=stop.id,
+                    item_type=ItemType.RESTAURANT if lunch_rest else ItemType.CUSTOM,
+                    restaurant_id=lunch_rest.id if lunch_rest else None,
+                    custom_title=f"Lunch: {lunch_info.get('name', 'Regional Cuisine')}",
+                    day_number=overall_day,
+                    scheduled_date=curr_stop_date,
+                    start_time="13:00",
+                    end_time="14:15",
+                    cost=350.0,
+                    notes="Food",
+                    travel_time_from_prev_minutes=15,
+                    travel_distance_km=1.8,
+                )
+                items.append(item_lunch)
 
-                p2 = remaining_afternoon[0]
-                used_place_ids.add(p2.id)
+                # 14:45 - 16:45: Afternoon Craft / Textile / Market Visit
+                remaining_places = [p for p in open_places if p.id not in global_used_place_ids]
+                if not remaining_places:
+                    remaining_places = [p for p in open_places if p.id != p1.id] or open_places
 
-                # Estimate transit from p1 to p2
+                p2 = remaining_places[0]
+                global_used_place_ids.add(p2.id)
+
                 est = geo_routing_engine.estimate_travel_time(
                     GeoPoint(latitude=p1.latitude, longitude=p1.longitude),
                     GeoPoint(latitude=p2.latitude, longitude=p2.longitude),
@@ -221,17 +263,57 @@ class TripService:
                 item2 = ItineraryItem(
                     id=str(uuid4()),
                     trip_stop_id=stop.id,
+                    item_type=ItemType.PLACE,
                     place_id=p2.id,
                     custom_title=p2.name,
                     day_number=overall_day,
                     scheduled_date=curr_stop_date,
-                    start_time="14:30",
-                    end_time="17:00",
+                    start_time="14:45",
+                    end_time="16:45",
                     cost=p2.entry_fee,
-                    travel_time_from_prev_minutes=est.duration_minutes,
+                    notes=p2.category,
+                    travel_time_from_prev_minutes=min(15, est.duration_minutes),
                     travel_distance_km=est.distance_km,
                 )
                 items.append(item2)
+
+                # 17:00 - 17:35: Evening Cultural Experience / Sunset View
+                exp_title = experiences_list[(overall_day - 1) % len(experiences_list)]["title"] if experiences_list else "Local Cultural & Sunset Experience"
+                item_eve = ItineraryItem(
+                    id=str(uuid4()),
+                    trip_stop_id=stop.id,
+                    item_type=ItemType.CUSTOM,
+                    custom_title=exp_title,
+                    day_number=overall_day,
+                    scheduled_date=curr_stop_date,
+                    start_time="17:00",
+                    end_time="17:35",
+                    cost=200.0,
+                    notes="Culture",
+                    travel_time_from_prev_minutes=15,
+                    travel_distance_km=2.0,
+                )
+                items.append(item_eve)
+
+                # 19:30 - 21:00: Dinner at Recommended Restaurant
+                din_rest = restaurants[2] if len(restaurants) > 2 else (restaurants[0] if restaurants else None)
+                din_title = f"Dinner: {din_rest.name}" if din_rest else f"Dinner at Recommended {dest.name} Restaurant"
+                item_dinner = ItineraryItem(
+                    id=str(uuid4()),
+                    trip_stop_id=stop.id,
+                    item_type=ItemType.RESTAURANT if din_rest else ItemType.CUSTOM,
+                    restaurant_id=din_rest.id if din_rest else None,
+                    custom_title=din_title,
+                    day_number=overall_day,
+                    scheduled_date=curr_stop_date,
+                    start_time="19:30",
+                    end_time="21:00",
+                    cost=500.0,
+                    notes="Food",
+                    travel_time_from_prev_minutes=15,
+                    travel_distance_km=2.0,
+                )
+                items.append(item_dinner)
 
                 overall_day += 1
                 curr_stop_date += timedelta(days=1)
@@ -395,38 +477,59 @@ class TripService:
             if destinations_by_stop.get(stop.id)
         }
 
-        item_details = [
-            ItineraryItemDetail(
-                id=it.id,
-                trip_stop_id=it.trip_stop_id,
-                item_type=it.item_type.value,
-                place_id=it.place_id,
-                custom_title=it.custom_title,
-                day_number=it.day_number,
-                scheduled_date=str(it.scheduled_date),
-                start_time=it.start_time,
-                end_time=it.end_time,
-                cost=it.cost,
-                status=it.status.value,
-                notes=it.notes,
-                category=db.places[it.place_id].category if it.place_id in db.places else None,
-                description=db.places[it.place_id].description if it.place_id in db.places else None,
-                image_url=db.places[it.place_id].image_url if it.place_id in db.places else None,
-                map_url=(
-                    "https://www.google.com/maps/search/?api=1&query="
-                    + quote_plus(
-                        f"{db.places[it.place_id].name}, "
-                        f"{stop_destination_names.get(it.trip_stop_id, '')}"
-                    )
-                    if it.place_id in db.places
-                    else None
-                ),
-                rating=db.places[it.place_id].rating if it.place_id in db.places else None,
-                travel_time_from_prev_minutes=it.travel_time_from_prev_minutes,
-                travel_distance_km=it.travel_distance_km,
+        item_details = []
+        for it in items:
+            place = db.places.get(it.place_id) if it.place_id else None
+            restaurant = db.restaurants.get(it.restaurant_id) if it.restaurant_id else None
+            dest_name = stop_destination_names.get(it.trip_stop_id, "")
+
+            cat = None
+            desc = None
+            img = None
+            rat = None
+            map_url = None
+
+            if place:
+                cat = place.category
+                desc = place.description
+                img = place.image_url
+                rat = place.rating
+                map_url = "https://www.google.com/maps/search/?api=1&query=" + quote_plus(f"{place.name}, {dest_name}")
+            elif restaurant:
+                cat = "Food"
+                desc = f"Specialties: {', '.join(restaurant.specialties)}" if restaurant.specialties else f"{restaurant.cuisine} dining"
+                img = restaurant.image_url
+                rat = restaurant.rating
+                map_url = "https://www.google.com/maps/search/?api=1&query=" + quote_plus(f"{restaurant.name}, {dest_name}")
+            else:
+                cat = it.notes if it.notes else ("Food" if "breakfast" in (it.custom_title or "").lower() or "lunch" in (it.custom_title or "").lower() or "dinner" in (it.custom_title or "").lower() else "Culture")
+                desc = it.notes or it.custom_title
+                if it.custom_title:
+                    map_url = "https://www.google.com/maps/search/?api=1&query=" + quote_plus(f"{it.custom_title}, {dest_name}")
+
+            item_details.append(
+                ItineraryItemDetail(
+                    id=it.id,
+                    trip_stop_id=it.trip_stop_id,
+                    item_type=it.item_type.value if hasattr(it.item_type, "value") else str(it.item_type),
+                    place_id=it.place_id,
+                    custom_title=it.custom_title,
+                    day_number=it.day_number,
+                    scheduled_date=str(it.scheduled_date),
+                    start_time=it.start_time,
+                    end_time=it.end_time,
+                    cost=it.cost,
+                    status=it.status.value if hasattr(it.status, "value") else str(it.status),
+                    notes=it.notes,
+                    category=cat,
+                    description=desc,
+                    image_url=img,
+                    map_url=map_url,
+                    rating=rat,
+                    travel_time_from_prev_minutes=it.travel_time_from_prev_minutes,
+                    travel_distance_km=it.travel_distance_km,
+                )
             )
-            for it in items
-        ]
 
         version_hash = proposal_store.compute_trip_state_hash(trip.id)
         duration_days = (trip.end_date - trip.start_date).days + 1

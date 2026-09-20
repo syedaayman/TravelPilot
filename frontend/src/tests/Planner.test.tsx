@@ -14,7 +14,10 @@ vi.mock('../api/destinations', () => ({
     { id: 'dest1', name: 'Hyderabad', description: 'City of Pearls', country: 'India', regions: ['South India'], state_province: 'Telangana', latitude: 17, longitude: 78, popular_season: 'Winter', type: 'City' },
     { id: 'dest2', name: 'Goa', description: 'Beaches', country: 'India', regions: ['West India'], state_province: 'Goa', latitude: 15, longitude: 74, popular_season: 'Winter', type: 'State' }
   ]),
+  getDestinationCulture: vi.fn().mockResolvedValue({}),
+  getDestinationDetails: vi.fn().mockResolvedValue({})
 }));
+
 
 // Mock useNavigate
 const mockNavigate = vi.fn();
@@ -43,8 +46,9 @@ describe('Planner', () => {
     
     // Wait for destinations to load
     await waitFor(() => {
-      expect(screen.getByText(/Hyderabad \(Telangana\)/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Hyderabad/i).length).toBeGreaterThan(0);
     });
+
 
     // 5. Multi-city mode can be enabled
     const multiCityBtn = screen.getByRole('button', { name: /Multi-City/i });

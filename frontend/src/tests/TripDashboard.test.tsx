@@ -96,9 +96,10 @@ describe('Trip Dashboard', () => {
 
   it('B. TripDashboardPage renders with representative trip data', async () => {
     renderDashboard();
-    expect(screen.getByText(/Loading dashboard/i)).toBeInTheDocument();
+    expect(screen.getByText(/Loading TravelPilot/i)).toBeInTheDocument();
     
     await waitFor(() => {
+
       expect(screen.getByText('My Cool Trip')).toBeInTheDocument();
     });
     
