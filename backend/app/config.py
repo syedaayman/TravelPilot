@@ -8,7 +8,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Gemini AI
+    # Groq AI
+    GROQ_API_KEY: Optional[str] = None
+
+    # Retained only so legacy modules can still import while the chat endpoint
+    # uses Groq. New configuration should use GROQ_API_KEY.
     GEMINI_API_KEY: Optional[str] = None
 
     # Supabase PostgreSQL

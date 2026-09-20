@@ -14,6 +14,10 @@ from backend.app.api.schemas.trips import (
     TripStopDetail,
     TransportLegDetail,
     ItineraryItemDetail,
+    HotelUpdateRequest,
+    ActivityValidateRequest,
+    ActivityValidateResponse,
+    ActivityValidateSuggestion,
 )
 from backend.app.api.schemas.agent import (
     AgentChatRequest,
@@ -50,6 +54,10 @@ __all__ = [
     "TripStopDetail",
     "TransportLegDetail",
     "ItineraryItemDetail",
+    "HotelUpdateRequest",
+    "ActivityValidateRequest",
+    "ActivityValidateResponse",
+    "ActivityValidateSuggestion",
     "AgentChatRequest",
     "AgentChatResponse",
     "AgentEventItem",

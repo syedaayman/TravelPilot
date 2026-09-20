@@ -6,6 +6,7 @@ replace destination, add activity) in isolated memory branches without mutating 
 
 from typing import List, Optional, Dict, Any, Tuple
 from datetime import date, time, datetime, timedelta, timezone
+from uuid import uuid4
 import copy
 import logging
 

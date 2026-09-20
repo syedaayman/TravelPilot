@@ -18,7 +18,7 @@ router = APIRouter(prefix="/agent", tags=["Agent"])
     "/chat",
     response_model=AgentChatResponse,
     summary="Agent interactive chat & modification",
-    description="Conversational interface powered by Gemini orchestrator with safe tool calling. Dispatches deterministic engine operations without exposing chain-of-thought.",
+    description="Context-aware conversational interface powered by Groq using the active trip state.",
 )
 def chat_with_agent(request: AgentChatRequest):
     try:

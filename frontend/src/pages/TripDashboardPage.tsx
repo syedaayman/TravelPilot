@@ -40,7 +40,11 @@ export default function TripDashboardPage() {
         setTrip(t);
         setRefreshKey(prev => prev + 1); // refresh timeline events
       })
-      .catch((err) => setError(err.message || 'Failed to load trip'))
+      .catch((err) => {
+        setError(err.message || 'Failed to load trip');
+        setTrip(null);
+        localStorage.removeItem('active_trip_id');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -85,7 +89,20 @@ export default function TripDashboardPage() {
   };
 
   if (loading && !trip) return <div className="p-12 text-center text-gray-500 animate-pulse">Loading dashboard...</div>;
-  if (error || !trip) return <div className="p-12 text-center text-red-500 bg-red-50 rounded-lg m-8">{error || 'Trip not found'}</div>;
+  if (error || !trip) return (
+    <div className="p-8 text-center">
+      <h2 className="text-xl font-bold text-red-600">Trip Not Found</h2>
+      <p className="mt-2 text-gray-600">
+        The trip with ID '{tripId}' could not be found or has expired.
+      </p>
+      <button 
+        onClick={() => window.location.href = '/'} 
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+      >
+        Plan a New Trip
+      </button>
+    </div>
+  );
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 relative">

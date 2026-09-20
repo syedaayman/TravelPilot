@@ -40,6 +40,35 @@ def test_create_single_city_trip(client: TestClient):
     assert data["validation"]["valid"] is True
 
 
+def test_plan_uses_inclusive_start_and_end_dates_for_two_days(client: TestClient):
+    response = client.post("/api/trips/plan", json={
+        "destinations": ["Goa"], "start_date": "2026-10-04", "end_date": "2026-10-05", "budget": 20000,
+    })
+    assert response.status_code == 201
+    data = response.json()
+    assert data["duration_days"] == 2
+    assert {item["scheduled_date"] for item in data["itinerary"]} == {"2026-10-04", "2026-10-05"}
+
+
+def test_plan_uses_inclusive_start_and_end_dates_for_seven_days(client: TestClient):
+    response = client.post("/api/trips/plan", json={
+        "destinations": ["Goa"], "start_date": "2026-10-03", "end_date": "2026-10-09", "budget": 40000,
+    })
+    assert response.status_code == 201
+    data = response.json()
+    assert data["duration_days"] == 7
+    assert {item["scheduled_date"] for item in data["itinerary"]} == {
+        "2026-10-03", "2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09"
+    }
+
+
+def test_plan_rejects_reversed_date_range(client: TestClient):
+    response = client.post("/api/trips/plan", json={
+        "destinations": ["Goa"], "start_date": "2026-10-09", "end_date": "2026-10-03", "budget": 20000,
+    })
+    assert response.status_code == 422
+
+
 def test_create_multi_city_trip(client: TestClient):
     payload = {
         "destinations": ["Hyderabad", "Hampi", "Goa"],

@@ -6,10 +6,14 @@ from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 
 
+class MessageHistory(BaseModel):
+    role: str
+    content: str
+
 class AgentChatRequest(BaseModel):
     trip_id: str
     message: str = Field(..., min_length=1)
-
+    history: List[MessageHistory] = Field(default_factory=list)
 
 class AgentChatResponse(BaseModel):
     success: bool = True

@@ -65,9 +65,10 @@ export default function PlannerPage() {
     }
   };
 
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const duration_days = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 3600 * 24)));
+  const start = new Date(`${startDate}T00:00:00`);
+  const end = new Date(`${endDate}T00:00:00`);
+  const duration_days = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
+  const accommodationNights = Math.max(0, duration_days - 1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,6 +88,7 @@ export default function PlannerPage() {
       budget: Number(budget),
       travelers: Number(travelers),
       start_date: startDate,
+      end_date: endDate,
       interests: selectedInterests,
       constraints: constraints || undefined,
       preferences: {
@@ -188,7 +190,7 @@ export default function PlannerPage() {
                     <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required className="w-full" />
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 font-medium">Trip Duration: <span className="text-indigo-600">{duration_days} days</span></p>
+                <p className="text-sm text-gray-500 font-medium">Trip duration: <span className="text-indigo-600">{duration_days} days</span> · Accommodation: <span className="text-indigo-600">{accommodationNights} nights</span></p>
               </div>
 
               <div className="space-y-4">

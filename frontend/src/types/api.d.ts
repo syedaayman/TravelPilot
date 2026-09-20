@@ -733,6 +733,16 @@ export interface components {
             status: string;
             /** Notes */
             notes?: string | null;
+            /** Category */
+            category?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Image Url */
+            image_url?: string | null;
+            /** Map Url */
+            map_url?: string | null;
+            /** Rating */
+            rating?: number | null;
             /**
              * Travel Time From Prev Minutes
              * @default 0
@@ -1151,6 +1161,8 @@ export interface components {
             budget: number;
             /** Start Date */
             start_date?: string | null;
+            /** End Date */
+            end_date?: string | null;
             /**
              * Travelers
              * @description Number of travelers.

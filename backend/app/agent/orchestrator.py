@@ -197,6 +197,8 @@ class AgentOrchestrator:
         user_request: str,
         trip_id: Optional[str] = None,
         user_id: Optional[str] = None,
+        history: Optional[List[Any]] = None,
+        trip_context: Optional[Dict[str, Any]] = None,
     ) -> AgentContext:
         """
         Main entrypoint: parses natural-language prompt, executes the multi-turn
@@ -224,9 +226,22 @@ class AgentOrchestrator:
         )
 
         # 2. Multi-turn Tool Calling Loop
-        conversation_history: List[Dict[str, Any]] = [
-            {"role": "user", "parts": [{"text": user_request}]}
-        ]
+        conversation_history: List[Dict[str, Any]] = []
+        
+        # Inject context and history
+        if trip_context:
+            system_context_msg = f"Active Trip Context:\n{json.dumps(trip_context, default=str)}\n\nUse this context to answer the user's questions accurately."
+            conversation_history.append({"role": "user", "parts": [{"text": system_context_msg}]})
+            conversation_history.append({"role": "model", "parts": [{"text": "Understood. I have the active trip context."}]})
+
+        if history:
+            for msg in history:
+                # Map standard role 'user' and 'agent' to 'user' and 'model' respectively
+                role = "model" if msg.role == "agent" else "user"
+                conversation_history.append({"role": role, "parts": [{"text": msg.content}]})
+
+        # Finally, append the current user request
+        conversation_history.append({"role": "user", "parts": [{"text": user_request}]})
 
         while context.iterations < self.max_iterations:
             context.iterations += 1

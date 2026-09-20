@@ -92,13 +92,15 @@ export function DisruptionPanel({ tripId, onProposal }: DisruptionPanelProps) {
 
       {error && <div className="text-red-500 text-sm mb-4 p-3 bg-red-50 rounded-lg">{error}</div>}
       
-      <Button 
-        onClick={handleTrigger} 
-        disabled={loading} 
-        className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 shadow-sm"
-      >
-        {loading ? 'Finding Feasible Alternatives...' : 'Trigger Disruption & Replan'}
-      </Button>
+      <div title={!tripId ? "Please load a valid trip first." : ""}>
+        <Button 
+          onClick={handleTrigger} 
+          disabled={loading || !tripId} 
+          className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 shadow-sm"
+        >
+          {loading ? 'Finding Feasible Alternatives...' : 'Trigger Disruption & Replan'}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -35,7 +35,8 @@ export function AgentChatDrawer({ tripId, isOpen, onClose }: AgentChatDrawerProp
     setLoading(true);
 
     try {
-      const response = await chatWithAgent({ trip_id: tripId, message: text });
+      const historyPayload = messages.map(m => ({ role: m.role, content: m.content }));
+      const response = await chatWithAgent({ trip_id: tripId, message: text, history: historyPayload } as any);
       setMessages(prev => [...prev, { role: 'agent', content: response.reply }]);
     } catch (err: any) {
       setMessages(prev => [...prev, { role: 'agent', content: `Error: ${err.message}` }]);

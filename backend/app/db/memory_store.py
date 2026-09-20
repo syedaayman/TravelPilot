@@ -204,6 +204,13 @@ class InMemoryDB:
         stops = [s for s in self.trip_stops.values() if s.trip_id == trip_id]
         return sorted(stops, key=lambda s: s.order_index)
 
+    def update_trip_stop(self, stop: TripStop) -> TripStop:
+        """Persist an updated TripStop (e.g. new hotel_id) without replacing unrelated fields."""
+        if stop.id not in self.trip_stops:
+            raise ValueError(f"TripStop {stop.id} does not exist.")
+        self.trip_stops[stop.id] = stop
+        return stop
+
     def add_itinerary_item(self, item: ItineraryItem) -> ItineraryItem:
         if item.trip_stop_id not in self.trip_stops:
             raise ValueError(f"TripStop {item.trip_stop_id} does not exist.")
