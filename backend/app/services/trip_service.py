@@ -161,6 +161,7 @@ class TripService:
         # 5. Schedule Tourist Activities per Destination Stop
         items: List[ItineraryItem] = []
         overall_day = 1
+        from backend.app.core.schedule_validator import date_to_schema_day
 
         for stop in stops:
             dest = destinations_by_stop[stop.id]
@@ -170,60 +171,67 @@ class TripService:
                 places = list(db.places.values())[:3]
 
             curr_stop_date = stop.arrival_date
-            place_pointer = 0
+            used_place_ids: set[str] = set()
 
             while curr_stop_date <= stop.departure_date:
-                # Schedule 2 activities per day: Morning and Afternoon
+                schema_day = date_to_schema_day(curr_stop_date)
+
+                # Filter places open on curr_stop_date
+                open_places = [p for p in places if schema_day not in p.closed_days]
+                if not open_places:
+                    open_places = places
+
+                # Find available unused places for this stop among open places
+                available_places = [p for p in open_places if p.id not in used_place_ids]
+                if not available_places:
+                    available_places = open_places
+
                 # Item 1: Morning (10:00 - 12:30)
-                if places:
-                    p1 = places[place_pointer % len(places)]
-                    item1 = ItineraryItem(
-                        id=str(uuid4()),
-                        trip_stop_id=stop.id,
-                        place_id=p1.id,
-                        custom_title=p1.name,
-                        day_number=overall_day,
-                        scheduled_date=curr_stop_date,
-                        start_time="10:00",
-                        end_time="12:30",
-                        cost=p1.entry_fee,
-                        travel_time_from_prev_minutes=0,
-                        travel_distance_km=0.0,
-                    )
-                    items.append(item1)
-                    place_pointer += 1
+                p1 = available_places[0]
+                used_place_ids.add(p1.id)
+                item1 = ItineraryItem(
+                    id=str(uuid4()),
+                    trip_stop_id=stop.id,
+                    place_id=p1.id,
+                    custom_title=p1.name,
+                    day_number=overall_day,
+                    scheduled_date=curr_stop_date,
+                    start_time="10:00",
+                    end_time="12:30",
+                    cost=p1.entry_fee,
+                    travel_time_from_prev_minutes=0,
+                    travel_distance_km=0.0,
+                )
+                items.append(item1)
 
                 # Item 2: Afternoon (14:30 - 17:00)
-                if places:
-                    p2 = places[place_pointer % len(places)]
-                    # Estimate transit from p1 to p2
-                    travel_time = 20
-                    dist_km = 5.0
-                    if place_pointer > 0 and items:
-                        prev_p = places[(place_pointer - 1) % len(places)]
-                        est = geo_routing_engine.estimate_travel_time(
-                            GeoPoint(latitude=prev_p.latitude, longitude=prev_p.longitude),
-                            GeoPoint(latitude=p2.latitude, longitude=p2.longitude),
-                            mode=RoutingMode.CAB,
-                        )
-                        travel_time = est.duration_minutes
-                        dist_km = est.distance_km
+                remaining_afternoon = [p for p in open_places if p.id not in used_place_ids]
+                if not remaining_afternoon:
+                    remaining_afternoon = [p for p in open_places if p.id != p1.id] or open_places
 
-                    item2 = ItineraryItem(
-                        id=str(uuid4()),
-                        trip_stop_id=stop.id,
-                        place_id=p2.id,
-                        custom_title=p2.name,
-                        day_number=overall_day,
-                        scheduled_date=curr_stop_date,
-                        start_time="14:30",
-                        end_time="17:00",
-                        cost=p2.entry_fee,
-                        travel_time_from_prev_minutes=travel_time,
-                        travel_distance_km=dist_km,
-                    )
-                    items.append(item2)
-                    place_pointer += 1
+                p2 = remaining_afternoon[0]
+                used_place_ids.add(p2.id)
+
+                # Estimate transit from p1 to p2
+                est = geo_routing_engine.estimate_travel_time(
+                    GeoPoint(latitude=p1.latitude, longitude=p1.longitude),
+                    GeoPoint(latitude=p2.latitude, longitude=p2.longitude),
+                    mode=RoutingMode.CAB,
+                )
+                item2 = ItineraryItem(
+                    id=str(uuid4()),
+                    trip_stop_id=stop.id,
+                    place_id=p2.id,
+                    custom_title=p2.name,
+                    day_number=overall_day,
+                    scheduled_date=curr_stop_date,
+                    start_time="14:30",
+                    end_time="17:00",
+                    cost=p2.entry_fee,
+                    travel_time_from_prev_minutes=est.duration_minutes,
+                    travel_distance_km=est.distance_km,
+                )
+                items.append(item2)
 
                 overall_day += 1
                 curr_stop_date += timedelta(days=1)

@@ -81,7 +81,7 @@ def test_live_api():
     # Actually, uvicorn in a thread doesn't stop easily. We'll trust the architecture that it's hitting supabase since InMemoryDB doesn't persist across processes.
     
     print("SUCCESS")
-    sys.exit(0)
+    return
 
 if __name__ == "__main__":
     test_live_api()
