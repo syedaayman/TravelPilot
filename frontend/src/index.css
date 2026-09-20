@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: theme('colors.blue.600');
+  --color-primary-foreground: theme('colors.white');
+  --color-secondary: theme('colors.gray.100');
+  --color-secondary-foreground: theme('colors.gray.900');
+  --color-destructive: theme('colors.red.600');
+  --color-destructive-foreground: theme('colors.white');
+  --color-muted: theme('colors.gray.100');
+  --color-muted-foreground: theme('colors.gray.500');
+  --color-accent: theme('colors.gray.100');
+  --color-accent-foreground: theme('colors.gray.900');
+  --color-background: theme('colors.white');
+  --color-foreground: theme('colors.gray.900');
+  --color-card: theme('colors.white');
+  --color-card-foreground: theme('colors.gray.900');
+  --color-border: theme('colors.gray.200');
+  --color-input: theme('colors.gray.200');
+  --color-ring: theme('colors.blue.600');
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
